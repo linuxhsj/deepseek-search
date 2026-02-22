@@ -1,17 +1,17 @@
-# Doubao Search Automation Skill
+# DeepSeek Search Automation Skill
 
-A skill for automating search operations on Doubao (ByteDance AI assistant) using AppleScript + JavaScript to bypass CDP restrictions.
+A skill for automating search operations on DeepSeek (AI assistant) using AppleScript + JavaScript to bypass CDP restrictions.
 
 ## Overview
 
-This skill provides a reliable way to extract search results from Doubao (`https://www.doubao.com/chat/`) without relying on unstable CDP (Chrome DevTools Protocol) connections. It uses macOS system APIs combined with browser JavaScript injection to overcome the limitations of traditional browser automation tools when working with Doubao's dynamic SPA application.
+This skill provides a reliable way to extract search results from DeepSeek without relying on unstable CDP (Chrome DevTools Protocol) connections. It uses macOS system APIs combined with browser JavaScript injection to overcome the limitations of traditional browser automation tools when working with DeepSeek's dynamic SPA application.
 
 ## Problem Statement
 
-Traditional browser automation tools (like Playwright, Puppeteer, or OpenClaw's browser tool) often fail with Doubao because:
+Traditional browser automation tools (like Playwright, Puppeteer, or OpenClaw's browser tool) often fail with DeepSeek because:
 
-1. **CDP Connection Instability**: Doubao's dynamic page updates frequently disconnect CDP sessions
-2. **Security Restrictions**: Doubao may block remote debugging protocols
+1. **CDP Connection Instability**: DeepSeek's dynamic page updates frequently disconnect CDP sessions
+2. **Security Restrictions**: DeepSeek may block remote debugging protocols
 3. **Dynamic Content**: Search results are generated dynamically after page load
 
 ## Solution
@@ -29,29 +29,29 @@ This skill bypasses these issues by:
 
 - macOS (requires AppleScript support)
 - Google Chrome installed
-- OpenClaw browser extension installed and attached to Doubao tab
+- OpenClaw browser extension installed and attached to DeepSeek tab
 
 ### Skill Setup
 
 1. Ensure the skill is in your OpenClaw skills directory:
    ```
-   ~/.openclaw/workspace/skills/doubao-search/
+   ~/.openclaw/workspace/skills/deepseek-search/
    ```
 
 2. Make scripts executable:
    ```bash
-   chmod +x ~/.openclaw/workspace/skills/doubao-search/scripts/*.sh
+   chmod +x ~/.openclaw/workspace/skills/deepseek-search/scripts/*.sh
    ```
 
 ## Usage
 
 ### From OpenClaw
 
-When you need to search Doubao:
+When you need to search DeepSeek:
 
-1. **Activate the skill**: Mention "doubao search" or similar keywords
+1. **Activate the skill**: Mention "deepseek search" or similar keywords
 2. **Follow the workflow**:
-   - Skill will guide you to open Doubao page in Chrome
+   - Skill will guide you to open DeepSeek page in Chrome
    - You'll manually enter the search query (due to CDP limitations)
    - Skill will extract and format the results
 
@@ -59,22 +59,22 @@ When you need to search Doubao:
 
 #### Shell Script
 ```bash
-# Extract content from already-searched Doubao page
-./scripts/doubao_search.sh
+# Extract content from already-searched DeepSeek page
+./scripts/deepseek_search.sh
 
 # Extract with cleaning
-./scripts/doubao_search.sh --clean
+./scripts/deepseek_search.sh --clean
 
 # Verbose output
-./scripts/doubao_search.sh --verbose
+./scripts/deepseek_search.sh --verbose
 ```
 
 #### Python Module
 ```python
-from scripts.doubao_search import search_doubao
+from scripts.deepseek_search import search_deepseek
 
 # Search and extract results
-result = search_doubao("广州旅游景点推荐", clean=True, verbose=True)
+result = search_deepseek("广州旅游景点推荐", clean=True, verbose=True)
 
 if result['success']:
     print(result['content'])
@@ -85,11 +85,11 @@ else:
 
 ### Complete Workflow Example
 
-1. **Manual Step**: Open Chrome, navigate to `https://www.doubao.com/chat/`
+1. **Manual Step**: Open Chrome, navigate to DeepSeek page
 2. **Manual Step**: Enter your search query and press Enter
 3. **Automated Step**: Run the skill to extract results:
    ```bash
-   ./scripts/doubao_search.sh --clean --verbose
+   ./scripts/deepseek_search.sh --clean --verbose
    ```
 
 ## How It Works
@@ -111,7 +111,7 @@ else:
 
 ### Step-by-Step Process
 
-1. **Tab Location**: AppleScript finds Chrome tab with Doubao URL
+1. **Tab Location**: AppleScript finds Chrome tab with DeepSeek URL
 2. **Window Activation**: Brings Chrome window to foreground
 3. **JavaScript Execution**: Injects script to extract page content
 4. **Content Targeting**: Locates search results by text patterns
@@ -138,7 +138,7 @@ return text.substring(start, end).trim();
 
 ## API Reference
 
-### Shell Script (`doubao_search.sh`)
+### Shell Script (`deepseek_search.sh`)
 
 **Arguments:**
 - `--clean`: Remove navigation and non-content elements
@@ -146,25 +146,25 @@ return text.substring(start, end).trim();
 - `--help`, `-h`: Show help message
 
 **Environment Variables:**
-- `DOUBAO_DEBUG`: Set to `1` for debug output
-- `DOUBAO_OUTPUT_DIR`: Custom output directory (default: `/tmp`)
+- `DEEPSEEK_DEBUG`: Set to `1` for debug output
+- `DEEPSEEK_OUTPUT_DIR`: Custom output directory (default: `/tmp`)
 
-### Python Module (`doubao_search.py`)
+### Python Module (`deepseek_search.py`)
 
 **Main Functions:**
-- `search_doubao(query, clean=True, verbose=False)`: Main search function
+- `search_deepseek(query, clean=True, verbose=False)`: Main search function
 - `extract_content(query=None)`: Extract content from current page
 - `clean_content(content, query=None)`: Clean and format extracted content
-- `find_doubao_tab()`: Locate Doubao tab in Chrome
+- `find_deepseek_tab()`: Locate DeepSeek tab in Chrome
 
 **Classes:**
-- `DoubaoSearchError`: Custom exception for search errors
+- `DeepSeekSearchError`: Custom exception for search errors
 
 ## Error Handling
 
 The skill handles common errors:
 
-1. **Tab Not Found**: Checks if Doubao page is open in Chrome
+1. **Tab Not Found**: Checks if DeepSeek page is open in Chrome
 2. **No Content**: Verifies search results are present
 3. **JavaScript Error**: Falls back to alternative extraction methods
 4. **System Errors**: Checks macOS and Chrome availability
@@ -189,19 +189,19 @@ Planned improvements:
 2. **Auto-Search**: Integrate with system automation to type queries
 3. **Enhanced Extraction**: Better AI-powered content recognition
 4. **Batch Processing**: Support multiple sequential searches
-5. **API Server**: REST API for remote Doubao search
+5. **API Server**: REST API for remote DeepSeek search
 
 ## Troubleshooting
 
 ### Common Issues
 
-**"Doubao tab not found"**
-- Ensure Chrome is running with Doubao tab open
-- Verify URL is exactly `https://www.doubao.com/chat/`
+**"DeepSeek tab not found"**
+- Ensure Chrome is running with DeepSeek tab open
+- Verify URL is correct
 - Check OpenClaw browser extension is attached (badge shows ON)
 
 **"No content extracted"**
-- Wait for Doubao to finish generating response
+- Wait for DeepSeek to finish generating response
 - Try `--clean` flag to filter non-content elements
 - Check if search query was properly entered
 
@@ -213,7 +213,7 @@ Planned improvements:
 
 Enable debug output:
 ```bash
-DOUBAO_DEBUG=1 ./scripts/doubao_search.sh --verbose
+DEEPSEEK_DEBUG=1 ./scripts/deepseek_search.sh --verbose
 ```
 
 ## Related Skills
@@ -234,7 +234,7 @@ MIT License
 
 ## Credits
 
-Developed based on successful implementation of Doubao search automation that bypasses CDP limitations using AppleScript + JavaScript.
+Developed based on successful implementation of DeepSeek search automation that bypasses CDP limitations using AppleScript + JavaScript.
 
 ## Changelog
 
