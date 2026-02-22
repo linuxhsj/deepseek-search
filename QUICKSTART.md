@@ -1,4 +1,4 @@
-# Doubao Search Skill - 快速开始指南
+# DeepSeek Search Skill - 快速开始指南
 
 ## 🚀 30秒上手
 
@@ -8,7 +8,7 @@
 - ✅ OpenClaw 浏览器扩展
 
 ### 基本使用流程
-1. **手动操作**：打开豆包页面并搜索
+1. **手动操作**：打开DeepSeek页面并搜索
 2. **自动提取**：运行脚本获取结果
 3. **后处理**：整理、格式化、分析结果
 
@@ -16,31 +16,31 @@
 
 ### 安装与设置
 ```bash
-cd ~/.openclaw/workspace/skills/doubao-search
+cd ~/.openclaw/workspace/skills/deepseek-search
 ./scripts/install.sh        # 安装技能
 ./examples/test_basic.sh    # 测试功能
 ```
 
 ### 内容提取
 ```bash
-# 基础提取（当前豆包页面）
-./scripts/doubao_search.sh
+# 基础提取（当前DeepSeek页面）
+./scripts/deepseek_search.sh
 
 # 清理后的输出
-./scripts/doubao_search.sh --clean
+./scripts/deepseek_search.sh --clean
 
 # 详细模式（调试用）
-./scripts/doubao_search.sh --verbose
+./scripts/deepseek_search.sh --verbose
 
 # 帮助信息
-./scripts/doubao_search.sh --help
+./scripts/deepseek_search.sh --help
 ```
 
 ### Python接口
 ```python
-from scripts.doubao_search import search_doubao
+from scripts.deepseek_search import search_deepseek
 
-result = search_doubao("搜索词", clean=True, verbose=False)
+result = search_deepseek("搜索词", clean=True, verbose=False)
 if result['success']:
     print(result['content'])
 ```
@@ -49,13 +49,13 @@ if result['success']:
 
 ### 场景：获取旅游推荐
 ```bash
-# 1. 手动：打开 https://www.doubao.com/chat/
+# 1. 手动：打开DeepSeek页面
 # 2. 手动：输入"广州旅游景点推荐"并回车
 # 3. 自动：运行提取脚本
-./scripts/doubao_search.sh --clean
+./scripts/deepseek_search.sh --clean
 
 # 4. 可选：保存结果
-./scripts/doubao_search.sh --clean > 广州旅游推荐.txt
+./scripts/deepseek_search.sh --clean > 广州旅游推荐.txt
 ```
 
 ### 场景：批量处理多个主题
@@ -69,19 +69,19 @@ echo "广州购物指南" >> queries.txt
 for query in $(cat queries.txt); do
     echo "处理: $query"
     # 手动搜索后运行
-    ./scripts/doubao_search.sh --clean > "${query}.txt"
+    ./scripts/deepseek_search.sh --clean > "${query}.txt"
 done
 ```
 
 ## 🐛 常见问题解决
 
-### 问题1：找不到豆包标签页
+### 问题1：找不到DeepSeek标签页
 ```
-错误：Doubao tab not found
+错误：DeepSeek tab not found
 ```
 **解决方案**：
-1. 打开Chrome，访问 `https://www.doubao.com/chat/`
-2. 确保URL完全匹配
+1. 打开Chrome，访问DeepSeek页面
+2. 确保URL正确
 3. 刷新页面重试
 
 ### 问题2：提取内容为空
@@ -89,7 +89,7 @@ done
 错误：No content extracted
 ```
 **解决方案**：
-1. 等待豆包生成完整回答（5-10秒）
+1. 等待DeepSeek生成完整回答（5-10秒）
 2. 检查页面是否显示搜索结果
 3. 尝试不使用`--clean`参数
 
@@ -109,16 +109,16 @@ done
 ```
 **解决方案**：
 ```bash
-open -a "Google Chrome" "https://www.doubao.com/chat/"
+open -a "Google Chrome"
 ```
 
 ## 📊 输出示例
 
 ### 原始提取
 ```
-=== DOUBAO SEARCH RESULTS ===
+=== DEEPSEEK SEARCH RESULTS ===
 
-[完整的豆包回答内容...]
+[完整的DeepSeek回答内容...]
 
 === END RESULTS ===
 ```
@@ -140,18 +140,18 @@ open -a "Google Chrome" "https://www.doubao.com/chat/"
 ## 🎯 OpenClaw集成提示
 
 ### 激活关键词
-- "doubao"、"豆包"、"搜索豆包"
-- "从豆包获取XXX"、"豆包搜索XXX"
+- "deepseek"、"搜索deepseek"
+- "从deepseek获取XXX"、"deepseek搜索XXX"
 
 ### 标准响应流程
 ```
-用户：搜索豆包获取XXX
+用户：搜索deepseek获取XXX
 助手：提供手动搜索指南 → 用户确认 → 提取结果 → 后处理
 ```
 
 ### 示例对话
 ```
-用户：帮我从豆包搜索Python学习路线
+用户：帮我从deepseek搜索Python学习路线
 助手：请先手动搜索"Python学习路线"...
 用户：已搜索完成  
 助手：✅ 成功提取！找到5个学习阶段...
@@ -160,7 +160,7 @@ open -a "Google Chrome" "https://www.doubao.com/chat/"
 ## ⚡ 性能优化提示
 
 ### 提高成功率
-1. **等待充分**：豆包生成回答需要5-10秒
+1. **等待充分**：DeepSeek生成回答需要5-10秒
 2. **页面稳定**：提取时不切换标签页
 3. **网络良好**：确保网络连接稳定
 4. **扩展就绪**：确认OpenClaw扩展已附加
@@ -168,8 +168,8 @@ open -a "Google Chrome" "https://www.doubao.com/chat/"
 ### 处理大量内容
 ```bash
 # 分段提取（避免超时）
-./scripts/doubao_search.sh > raw.txt
-./scripts/doubao_search.sh --clean > clean.txt
+./scripts/deepseek_search.sh > raw.txt
+./scripts/deepseek_search.sh --clean > clean.txt
 
 # 内容分析
 grep -c "推荐" clean.txt           # 统计推荐数量
@@ -182,7 +182,7 @@ head -50 clean.txt                # 预览前50行
 ### 自动搜索（实验性）
 ```bash
 # 尝试自动输入和搜索（需要辅助功能权限）
-./scripts/doubao_auto_search.sh --query "测试搜索词"
+./scripts/deepseek_auto_search.sh --query "测试搜索词"
 ```
 
 ### 配置定制
@@ -218,14 +218,14 @@ grep -E "(上午|下午|晚上|推荐|建议)" clean.txt
 ./examples/test_basic.sh
 
 # 检查脚本语法
-bash -n scripts/doubao_search.sh
-python3 -m py_compile scripts/doubao_search.py
+bash -n scripts/deepseek_search.sh
+python3 -m py_compile scripts/deepseek_search.py
 ```
 
 ### 查看日志
 ```bash
 # 启用详细模式查看过程
-./scripts/doubao_search.sh --verbose 2>&1 | tee debug.log
+./scripts/deepseek_search.sh --verbose 2>&1 | tee debug.log
 
 # 查看AppleScript错误
 osascript -e 'tell application "Google Chrome" to get URL of active tab' 2>&1
@@ -236,25 +236,25 @@ osascript -e 'tell application "Google Chrome" to get URL of active tab' 2>&1
 ### 组合使用其他工具
 ```bash
 # 提取后使用pandoc转换格式
-./scripts/doubao_search.sh --clean | pandoc -f markdown -t html -o output.html
+./scripts/deepseek_search.sh --clean | pandoc -f markdown -t html -o output.html
 
 # 使用jq处理JSON输出
-./scripts/doubao_search.sh --clean | python3 to_json.py | jq '.content'
+./scripts/deepseek_search.sh --clean | python3 to_json.py | jq '.content'
 
 # 统计关键词频率
-./scripts/doubao_search.sh --clean | tr ' ' '\n' | sort | uniq -c | sort -nr | head -20
+./scripts/deepseek_search.sh --clean | tr ' ' '\n' | sort | uniq -c | sort -nr | head -20
 ```
 
 ### 创建快捷方式
 ```bash
 # 添加到PATH
-ln -s $(pwd)/scripts/doubao_search.sh /usr/local/bin/doubao
+ln -s $(pwd)/scripts/deepseek_search.sh /usr/local/bin/deepseek
 
 # 使用别名
-alias doubao-search='cd ~/.openclaw/workspace/skills/doubao-search && ./scripts/doubao_search.sh'
+alias deepseek-search='cd ~/.openclaw/workspace/skills/deepseek-search && ./scripts/deepseek_search.sh'
 
 # 现在可以直接运行
-doubao-search --clean
+deepseek-search --clean
 ```
 
 ## ⏱️ 时间预估
@@ -263,7 +263,7 @@ doubao-search --clean
 |------|------|------|
 | 手动打开页面 | 10-30秒 | 首次使用或页面未打开 |
 | 手动输入搜索 | 5-10秒 | 打字时间 |
-| 豆包生成回答 | 5-15秒 | 取决于查询复杂度 |
+| DeepSeek生成回答 | 5-15秒 | 取决于查询复杂度 |
 | 自动提取内容 | 2-5秒 | 脚本执行时间 |
 | 结果后处理 | 可变 | 取决于处理复杂度 |
 
@@ -272,7 +272,7 @@ doubao-search --clean
 ## ✅ 完成检查清单
 
 - [ ] Chrome已安装并运行
-- [ ] 豆包页面已打开：`https://www.doubao.com/chat/`
+- [ ] DeepSeek页面已打开
 - [ ] 已完成手动搜索并看到结果
 - [ ] OpenClaw扩展已附加（徽章ON）
 - [ ] AppleScript权限已授予
