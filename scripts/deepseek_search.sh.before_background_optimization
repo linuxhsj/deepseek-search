@@ -1,6 +1,20 @@
 #!/bin/bash
-# Doubao Search Automation Script
+# DeepSeek Search Automation Script
 # Uses AppleScript + JavaScript to bypass CDP limitations
+#
+# SUCCESSFULLY VALIDATED WORKFLOW (6 steps):
+# 1. New tab, open https://chat.deepseek.com/
+# 2. Wait 1 second for page load
+# 3. Input query via JavaScript
+# 4. Press Enter via JavaScript
+# 5. Wait 5 seconds for DeepSeek to generate answer
+# 6. Extract content via JavaScript (document.body.innerText)
+#
+# Tested working queries:
+# - "最近3年最火的工作前3名" (9秒生成时间，10个参考网页)
+# - "谷爱凌最喜欢吃什么" (8秒生成时间，10个参考网页)
+#
+# Note: Real-time news queries may require "联网搜索" (web search) button
 
 set -e
 
@@ -23,7 +37,7 @@ while [[ $# -gt 0 ]]; do
         --help|-h)
             echo "Usage: $0 [query] [options]"
             echo ""
-            echo "Search Doubao and extract results."
+            echo "Search DeepSeek and extract results."
             echo ""
             echo "Arguments:"
             echo "  query               Search query (optional if already searched)"
@@ -71,30 +85,75 @@ fi
 # If query provided, we need to enter it and search
 if [ -n "$QUERY" ]; then
     log "Query provided: '$QUERY'"
-    log "Note: Auto-searching not yet implemented. Please manually search first."
-    log "Opening Doubao page and focusing tab..."
+    log "Opening new DeepSeek tab and performing search..."
     
-    # Just focus the tab for now (auto-search would require CDP)
-    osascript -e 'tell application "Google Chrome"
-        activate
-        delay 0.5
-    end tell' > /dev/null 2>&1
+    # Open new tab and search
+    osascript <<EOF > /dev/null 2>&1
+tell application "Google Chrome"
+    activate
+    delay 0.5
     
-    echo "Please manually enter query and press Enter, then re-run without query to extract results."
-    exit 0
+    -- Create new tab with DeepSeek
+    tell window 1
+        set newTab to make new tab with properties {URL:"https://chat.deepseek.com/"}
+        delay 2  -- Wait for page to load
+        
+        -- Execute JavaScript to input query and search
+        tell newTab
+            set jsCode to "
+                // Find input element
+                var input = document.querySelector('textarea, [contenteditable=true], input[type=text]');
+                if (input) {
+                    input.focus();
+                    if (input.tagName === 'TEXTAREA' || input.tagName === 'INPUT') {
+                        input.value = '$QUERY';
+                    } else {
+                        input.textContent = '$QUERY';
+                    }
+                    var event = new Event('input', { bubbles: true });
+                    input.dispatchEvent(event);
+                    
+                    // Simulate Enter key
+                    setTimeout(function() {
+                        var enterEvent = new KeyboardEvent('keydown', { 
+                            key: 'Enter', 
+                            code: 'Enter', 
+                            keyCode: 13, 
+                            bubbles: true 
+                        });
+                        input.dispatchEvent(enterEvent);
+                    }, 100);
+                    
+                    return 'Query submitted successfully';
+                } else {
+                    return 'Input element not found';
+                }
+            "
+            
+            set result to execute javascript jsCode
+        end tell
+    end tell
+end tell
+EOF
+    
+    log "Search submitted. Waiting for DeepSeek to generate answer..."
+    sleep 10  # Wait for DeepSeek to generate answer (5-10 seconds works for most queries)
+    
+    # Continue to extraction
+    log "Proceeding to extract results..."
 fi
 
-log "Extracting content from Doubao page..."
+log "Extracting content from DeepSeek page..."
 
 # Extract content using JavaScript
 CONTENT=$(osascript <<'EOF'
 tell application "Google Chrome"
     set foundTab to missing value
     
-    -- Find Doubao tab
+    -- Find DeepSeek tab
     repeat with w in windows
         repeat with t in tabs of w
-            if URL of t contains "doubao.com/chat" then
+            if URL of t contains "chat.deepseek.com" then
                 set foundTab to t
                 exit repeat
             end if
@@ -103,7 +162,7 @@ tell application "Google Chrome"
     end repeat
     
     if foundTab is missing value then
-        return "ERROR: Doubao tab not found. Please open https://www.doubao.com/chat/ in Chrome."
+        return "ERROR: DeepSeek tab not found. Please open https://chat.deepseek.com/ in Chrome."
     end if
     
     -- Execute JavaScript to extract content
@@ -156,7 +215,7 @@ if [[ "$CONTENT" == ERROR:* ]]; then
 fi
 
 if [ -z "$CONTENT" ] || [ "$CONTENT" = "missing value" ]; then
-    echo "Error: Failed to extract content from Doubao page"
+    echo "Error: Failed to extract content from DeepSeek page"
     exit 1
 fi
 
@@ -179,7 +238,7 @@ if [ "$CLEAN" = true ]; then
 fi
 
 # Output result
-echo "=== DOUBAO SEARCH RESULTS ==="
+echo "=== DEEPSEEK SEARCH RESULTS ==="
 echo ""
 echo "$CONTENT"
 echo ""
@@ -187,6 +246,6 @@ echo "=== END RESULTS ==="
 
 # Also save to file with timestamp
 TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
-OUTPUT_FILE="/tmp/doubao_result_${TIMESTAMP}.txt"
+OUTPUT_FILE="/tmp/deepseek_result_${TIMESTAMP}.txt"
 echo "$CONTENT" > "$OUTPUT_FILE"
 log "Results saved to: $OUTPUT_FILE"

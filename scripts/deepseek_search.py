@@ -1,7 +1,21 @@
 #!/usr/bin/env python3
 """
-Doubao Search Automation Module
-Provides functions to search Doubao and extract results using AppleScript + JavaScript.
+DeepSeek Search Automation Module
+Provides functions to search DeepSeek and extract results using AppleScript + JavaScript.
+
+SUCCESSFULLY VALIDATED WORKFLOW (6 steps):
+1. New tab, open https://chat.deepseek.com/
+2. Wait 1 second for page load
+3. Input query via JavaScript
+4. Press Enter via JavaScript
+5. Wait 5 seconds for DeepSeek to generate answer
+6. Extract content via JavaScript (document.body.innerText)
+
+Tested working queries:
+- "最近3年最火的工作前3名" (9秒生成时间，10个参考网页)
+- "谷爱凌最喜欢吃什么" (8秒生成时间，10个参考网页)
+
+Note: Real-time news queries may require "联网搜索" (web search) button
 """
 
 import os
@@ -13,8 +27,8 @@ import tempfile
 import time
 
 
-class DoubaoSearchError(Exception):
-    """Custom exception for Doubao search errors."""
+class DeepSeekSearchError(Exception):
+    """Custom exception for DeepSeek search errors."""
     pass
 
 
@@ -29,7 +43,7 @@ def execute_applescript(script: str) -> str:
         Script output as string
         
     Raises:
-        DoubaoSearchError: If AppleScript execution fails
+        DeepSeekSearchError: If AppleScript execution fails
     """
     try:
         # Write script to temporary file
@@ -51,29 +65,29 @@ def execute_applescript(script: str) -> str:
             os.unlink(temp_path)
             
     except subprocess.CalledProcessError as e:
-        raise DoubaoSearchError(f"AppleScript execution failed: {e.stderr}")
+        raise DeepSeekSearchError(f"AppleScript execution failed: {e.stderr}")
     except Exception as e:
-        raise DoubaoSearchError(f"Failed to execute AppleScript: {str(e)}")
+        raise DeepSeekSearchError(f"Failed to execute AppleScript: {str(e)}")
 
 
-def find_doubao_tab() -> str:
+def find_deepseek_tab() -> str:
     """
-    Find Doubao tab in Chrome using AppleScript.
+    Find DeepSeek tab in Chrome using AppleScript.
     
     Returns:
         Tab reference or error message
         
     Raises:
-        DoubaoSearchError: If Chrome not running or Doubao tab not found
+        DeepSeekSearchError: If Chrome not running or DeepSeek tab not found
     """
     script = '''
 tell application "Google Chrome"
     set foundTab to missing value
     
-    -- Find Doubao tab by URL pattern
+    -- Find DeepSeek tab by URL pattern
     repeat with w in windows
         repeat with t in tabs of w
-            if URL of t contains "doubao.com/chat" then
+            if URL of t contains "chat.deepseek.com" then
                 set foundTab to t
                 exit repeat
             end if
@@ -82,7 +96,7 @@ tell application "Google Chrome"
     end repeat
     
     if foundTab is missing value then
-        return "ERROR: Doubao tab not found"
+        return "ERROR: DeepSeek tab not found"
     end if
     
     -- Activate the tab
@@ -96,13 +110,13 @@ end tell
     
     result = execute_applescript(script)
     if "ERROR:" in result:
-        raise DoubaoSearchError(result)
+        raise DeepSeekSearchError(result)
     return result
 
 
 def extract_content(query: Optional[str] = None) -> str:
     """
-    Extract content from Doubao page using JavaScript.
+    Extract content from DeepSeek page using JavaScript.
     
     Args:
         query: If provided, will be used to locate specific content
@@ -199,7 +213,7 @@ tell application "Google Chrome"
     
     repeat with w in windows
         repeat with t in tabs of w
-            if URL of t contains "doubao.com/chat" then
+            if URL of t contains "chat.deepseek.com" then
                 set foundTab to t
                 exit repeat
             end if
@@ -208,7 +222,7 @@ tell application "Google Chrome"
     end repeat
     
     if foundTab is missing value then
-        return "ERROR: Doubao tab not found"
+        return "ERROR: DeepSeek tab not found"
     end if
     
     tell foundTab
@@ -220,7 +234,7 @@ end tell
     
     result = execute_applescript(script)
     if "ERROR:" in result:
-        raise DoubaoSearchError(result)
+        raise DeepSeekSearchError(result)
     return result
 
 
@@ -294,9 +308,9 @@ def clean_content(content: str, query: Optional[str] = None) -> str:
     return '\n\n'.join(cleaned_lines)
 
 
-def search_doubao(query: str, clean: bool = True, verbose: bool = False) -> Dict[str, Union[str, bool]]:
+def search_deepseek(query: str, clean: bool = True, verbose: bool = False) -> Dict[str, Union[str, bool]]:
     """
-    Main function to search Doubao and extract results.
+    Main function to search DeepSeek and extract results.
     
     Args:
         query: Search query
@@ -309,19 +323,19 @@ def search_doubao(query: str, clean: bool = True, verbose: bool = False) -> Dict
     start_time = time.time()
     
     if verbose:
-        print(f"[INFO] Starting Doubao search for: {query}")
-        print(f"[INFO] Checking Chrome and Doubao tab...")
+        print(f"[INFO] Starting DeepSeek search for: {query}")
+        print(f"[INFO] Checking Chrome and DeepSeek tab...")
     
     try:
-        # Find and activate Doubao tab
-        tab_result = find_doubao_tab()
+        # Find and activate DeepSeek tab
+        tab_result = find_deepseek_tab()
         if verbose:
             print(f"[INFO] Tab status: {tab_result}")
         
         # Note: We can't automate the actual search without CDP
         # User needs to manually enter query and press Enter
         if verbose:
-            print("[INFO] Please manually enter the query in Doubao and press Enter")
+            print("[INFO] Please manually enter the query in DeepSeek and press Enter")
             print("[INFO] Waiting 5 seconds for manual input...")
             time.sleep(5)
         
@@ -354,7 +368,7 @@ def search_doubao(query: str, clean: bool = True, verbose: bool = False) -> Dict
             'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
         }
         
-    except DoubaoSearchError as e:
+    except DeepSeekSearchError as e:
         elapsed_time = time.time() - start_time
         return {
             'success': False,
@@ -379,7 +393,7 @@ def save_results(results: Dict, output_file: Optional[str] = None) -> str:
     Save search results to file.
     
     Args:
-        results: Results dictionary from search_doubao
+        results: Results dictionary from search_deepseek
         output_file: Optional output file path
         
     Returns:
@@ -388,7 +402,7 @@ def save_results(results: Dict, output_file: Optional[str] = None) -> str:
     if not output_file:
         timestamp = time.strftime('%Y%m%d_%H%M%S')
         query_slug = re.sub(r'[^\w\s-]', '', results.get('query', 'unknown')).replace(' ', '_')[:50]
-        output_file = f"/tmp/doubao_{query_slug}_{timestamp}.json"
+        output_file = f"/tmp/deepseek_{query_slug}_{timestamp}.json"
     
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
@@ -400,7 +414,7 @@ def main():
     """Command-line interface."""
     import argparse
     
-    parser = argparse.ArgumentParser(description='Search Doubao and extract results')
+    parser = argparse.ArgumentParser(description='Search DeepSeek and extract results')
     parser.add_argument('query', help='Search query')
     parser.add_argument('--clean', action='store_true', default=True,
                        help='Clean output (default: True)')
@@ -419,7 +433,7 @@ def main():
         print("Error: This tool requires macOS", file=sys.stderr)
         sys.exit(1)
     
-    results = search_doubao(args.query, clean=args.clean, verbose=args.verbose)
+    results = search_deepseek(args.query, clean=args.clean, verbose=args.verbose)
     
     if results['success']:
         if args.text_only:

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Doubao Auto Search Script
+# DeepSeek Auto Search Script
 # Attempts to automate the complete search process including typing and searching
 # Note: This requires additional permissions and may not work reliably
 
@@ -27,7 +27,7 @@ while [[ $# -gt 0 ]]; do
         --help|-h)
             echo "Usage: $0 [options]"
             echo ""
-            echo "Attempt to automate Doubao search including typing and searching."
+            echo "Attempt to automate DeepSeek search including typing and searching."
             echo "WARNING: This requires Accessibility permissions and may not work reliably."
             echo ""
             echo "Options:"
@@ -65,38 +65,38 @@ if [[ "$(uname)" != "Darwin" ]]; then
     exit 1
 fi
 
-log "Starting Doubao auto search for: '$QUERY'"
+log "Starting DeepSeek auto search for: '$QUERY'"
 
-# Step 1: Open or focus Doubao page
-log "Step 1: Opening/focusing Doubao page..."
+# Step 1: Open or focus DeepSeek page
+log "Step 1: Opening/focusing DeepSeek page..."
 
 OPEN_RESULT=$(osascript <<EOF
 tell application "Google Chrome"
-    set doubaoTab to missing value
-    set doubaoURL to "https://www.doubao.com/chat/"
+    set deepseekTab to missing value
+    set deepseekURL to "https://chat.deepseek.com/"
     
-    -- Check if Doubao tab already exists
+    -- Check if DeepSeek tab already exists
     repeat with w in windows
         repeat with t in tabs of w
-            if URL of t contains "doubao.com/chat" then
-                set doubaoTab to t
+            if URL of t contains "chat.deepseek.com" then
+                set deepseekTab to t
                 exit repeat
             end if
         end repeat
-        if doubaoTab is not missing value then exit repeat
+        if deepseekTab is not missing value then exit repeat
     end repeat
     
-    if doubaoTab is missing value then
+    if deepseekTab is missing value then
         -- Open new tab
         tell window 1
-            set newTab to make new tab with properties {URL:doubaoURL}
-            set doubaoTab to newTab
+            set newTab to make new tab with properties {URL:deepseekURL}
+            set deepseekTab to newTab
         end tell
     end if
     
     -- Activate the tab
-    set active tab index of (window of doubaoTab) to index of doubaoTab in tabs of (window of doubaoTab)
-    set index of (window of doubaoTab) to 1
+    set active tab index of (window of deepseekTab) to index of deepseekTab in tabs of (window of deepseekTab)
+    set index of (window of deepseekTab) to 1
     activate
     
     -- Wait for page to load
@@ -108,11 +108,11 @@ EOF
 )
 
 if [[ "$OPEN_RESULT" != "SUCCESS" ]]; then
-    echo "Error: Failed to open/focus Doubao page"
+    echo "Error: Failed to open/focus DeepSeek page"
     exit 1
 fi
 
-log "✓ Doubao page focused"
+log "✓ DeepSeek page focused"
 
 # Step 2: Attempt to type query using AppleScript
 # WARNING: This requires Accessibility permissions
@@ -159,7 +159,7 @@ if [[ "$TYPING_ATTEMPT" != "TYPING_ATTEMPTED" ]]; then
     echo "Please manually:"
     echo "1. Type in Chrome: $QUERY"
     echo "2. Press Enter"
-    echo "3. Wait for Doubao to generate results"
+    echo "3. Wait for DeepSeek to generate results"
     echo ""
     read -p "Press Enter when you have completed manual search..."
     echo ""
@@ -174,7 +174,7 @@ log "Step 3: Extracting results..."
 
 # Use the main extraction script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-EXTRACTION_RESULT=$("$SCRIPT_DIR/doubao_search.sh" --clean 2>&1)
+EXTRACTION_RESULT=$("$SCRIPT_DIR/deepseek_search.sh" --clean 2>&1)
 
 if [[ $? -eq 0 ]]; then
     echo "$EXTRACTION_RESULT"
@@ -189,12 +189,12 @@ fi
 CONTENT_LENGTH=$(echo "$EXTRACTION_RESULT" | wc -c)
 if [[ $CONTENT_LENGTH -lt 500 ]]; then
     log "⚠️  Extracted content seems short ($CONTENT_LENGTH chars)"
-    log "   Doubao might still be generating results..."
+    log "   DeepSeek might still be generating results..."
     log "   Waiting additional 5 seconds and retrying..."
     
     sleep 5
     
-    EXTRACTION_RESULT=$("$SCRIPT_DIR/doubao_search.sh" --clean 2>&1)
+    EXTRACTION_RESULT=$("$SCRIPT_DIR/deepseek_search.sh" --clean 2>&1)
     NEW_LENGTH=$(echo "$EXTRACTION_RESULT" | wc -c)
     
     log "   Retry extracted $NEW_LENGTH characters"
