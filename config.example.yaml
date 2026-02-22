@@ -1,0 +1,289 @@
+# Doubao Search Skill Configuration
+# Copy this file to config.yaml and adjust as needed
+
+# General settings
+general:
+  # Default browser to use (only Chrome supported currently)
+  browser: "Google Chrome"
+  
+  # Default Doubao URL
+  doubao_url: "https://www.doubao.com/chat/"
+  
+  # Timeout settings (in seconds)
+  timeouts:
+    tab_search: 5      # Time to search for tab
+    js_execution: 10   # Time for JavaScript to execute
+    content_load: 3    # Time to wait for content loading
+    
+  # Output settings
+  output:
+    default_format: "text"  # text, json, markdown
+    auto_save: true
+    save_directory: "/tmp/doubao_results"
+    timestamp_format: "%Y%m%d_%H%M%S"
+
+# Content extraction settings
+extraction:
+  # Content location strategies (tried in order)
+  strategies:
+    - "query_based"      # Find content by search query text
+    - "marker_based"     # Look for content markers
+    - "heuristic"        # Use heuristics to find content
+    - "full_text"        # Fallback to full text extraction
+  
+  # Text patterns to identify content boundaries
+  markers:
+    start_markers:
+      - "这里为你"
+      - "以下"
+      - "推荐"
+      - "建议"
+    
+    end_markers:
+      - "参考"
+      - "我可以帮你"
+      - "快速"
+      - "帮我写作"
+      - "编程"
+      - "深入研究"
+  
+  # Minimum content length (characters)
+  min_content_length: 100
+  
+  # Maximum content length (characters)
+  max_content_length: 10000
+
+# Content cleaning settings
+cleaning:
+  # Patterns to remove (regex)
+  remove_patterns:
+    - "^新对话$"
+    - "^AI 创作"
+    - "^云盘$"
+    - "^更多$"
+    - "^历史对话$"
+    - "^抖音"
+    - "^快速$"
+    - "^帮我写作$"
+    - "^编程$"
+    - "^深入研究$"
+    - "^图像生成$"
+    - "^解题答疑$"
+    - "^更多$"
+    - "^PPT 生成$"
+    - "^免费$"
+    - "^参考 \\d+ 篇资料$"
+  
+  # Minimum line length to keep (characters)
+  min_line_length: 10
+  
+  # Remove empty lines
+  remove_empty_lines: true
+  
+  # Remove duplicate lines
+  remove_duplicates: true
+  
+  # Normalize whitespace
+  normalize_whitespace: true
+
+# JavaScript injection settings
+javascript:
+  # JavaScript code templates
+  templates:
+    query_based: |
+      (function() {
+        var text = document.body.innerText;
+        var start = text.indexOf("{{query}}");
+        
+        if (start === -1) {
+          return "ERROR: Query not found in page";
+        }
+        
+        var endMarkers = {{end_markers}};
+        var end = -1;
+        
+        for (var marker of endMarkers) {
+          var markerPos = text.indexOf(marker, start + 50);
+          if (markerPos !== -1 && (end === -1 || markerPos < end)) {
+            end = markerPos;
+          }
+        }
+        
+        if (end === -1) {
+          end = start + {{max_length}};
+        }
+        
+        return text.substring(start, end).trim();
+      })()
+    
+    heuristic: |
+      (function() {
+        var text = document.body.innerText;
+        var lines = text.split('\\n');
+        var contentLines = [];
+        var skipPatterns = {{skip_patterns}};
+        
+        for (var line of lines) {
+          line = line.trim();
+          if (line.length === 0) continue;
+          
+          var shouldSkip = false;
+          for (var pattern of skipPatterns) {
+            if (new RegExp(pattern).test(line)) {
+              shouldSkip = true;
+              break;
+            }
+          }
+          
+          var hasChinese = /[\\u4e00-\\u9fff]/.test(line);
+          if (!shouldSkip && hasChinese && line.length > {{min_line_length}}) {
+            contentLines.push(line);
+          }
+        }
+        
+        if (contentLines.length > 0) {
+          return contentLines.join('\\n\\n');
+        }
+        
+        return text.substring(0, {{max_length}});
+      })()
+
+# AppleScript settings (macOS only)
+applescript:
+  # Chrome application name (might vary by language)
+  chrome_app_name: "Google Chrome"
+  
+  # Tab search parameters
+  tab_search:
+    url_pattern: "doubao.com/chat"
+    max_windows: 10
+    max_tabs_per_window: 20
+  
+  # Activation settings
+  activation:
+    bring_to_front: true
+    focus_tab: true
+    delay_after_activation: 0.5
+
+# Logging settings
+logging:
+  # Log level: debug, info, warning, error
+  level: "info"
+  
+  # Log destinations
+  destinations:
+    - "console"
+    - "file"
+  
+  # Log file settings
+  file:
+    path: "/tmp/doubao_search.log"
+    max_size_mb: 10
+    max_files: 5
+
+# Platform-specific settings
+platform:
+  # macOS-specific settings
+  macos:
+    # AppleScript execution settings
+    applescript_timeout: 30
+    # Accessibility permissions check
+    check_accessibility: true
+  
+  # Windows-specific settings (future)
+  windows:
+    # PowerShell script alternatives
+    enabled: false
+  
+  # Linux-specific settings (future)
+  linux:
+    # DBus alternatives
+    enabled: false
+
+# Integration settings
+integration:
+  # OpenClaw integration
+  openclaw:
+    # Skill activation keywords
+    activation_keywords:
+      - "doubao"
+      - "豆包"
+      - "搜索豆包"
+      - "doubao search"
+    
+    # Auto-detect Doubao URLs
+    auto_detect_urls: true
+    
+  # Browser extension integration
+  browser_extension:
+    # OpenClaw browser extension requirements
+    require_extension: true
+    extension_name: "OpenClaw Browser Relay"
+    
+  # External tools integration
+    external_tools:
+    # jq for JSON processing
+    jq_available: false
+    
+    # pandoc for format conversion
+    pandoc_available: false
+
+# Performance settings
+performance:
+  # Caching settings
+  caching:
+    enable: true
+    cache_duration: 3600  # seconds
+    
+  # Parallel processing
+  parallel:
+    max_concurrent_searches: 1
+    
+  # Memory limits
+  memory:
+    max_content_size_mb: 10
+
+# Security settings
+security:
+  # Content sanitization
+  sanitization:
+    remove_script_tags: true
+    remove_style_tags: true
+    remove_iframes: true
+    
+  # Privacy
+  privacy:
+    # Do not log search queries
+    log_queries: false
+    
+    # Anonymize output
+    anonymize: false
+    
+  # Rate limiting
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 10
+    requests_per_hour: 100
+
+# Example profiles
+profiles:
+  # Basic profile - minimal extraction
+  basic:
+    extraction_strategy: "query_based"
+    cleaning_level: "minimal"
+    output_format: "text"
+  
+  # Full profile - comprehensive extraction
+  full:
+    extraction_strategy: "heuristic"
+    cleaning_level: "aggressive"
+    output_format: "markdown"
+    save_output: true
+  
+  # Debug profile - verbose output
+  debug:
+    extraction_strategy: "full_text"
+    cleaning_level: "none"
+    output_format: "json"
+    logging_level: "debug"
+    save_raw_output: true

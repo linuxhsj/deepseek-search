@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+
+# User config (contains potential sensitive info)
+config.yaml
+
+# Output files
+/tmp/
+*.log
+doubao_result_*.txt
+doubao_*.json
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
