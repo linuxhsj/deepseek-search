@@ -1,28 +1,28 @@
-# Doubao Search Skill - 完整演示工作流
+# DeepSeek Search Skill - 完整演示工作流
 
-本文档展示Doubao Search技能在实际OpenClaw会话中的完整使用流程。
+本文档展示DeepSeek Search技能在实际OpenClaw会话中的完整使用流程。
 
 ## 场景：规划广州旅游行程
 
-**用户需求**：从豆包获取广州旅游推荐，并整理成3天行程表。
+**用户需求**：从DeepSeek获取广州旅游推荐，并整理成3天行程表。
 
 ### 步骤1：用户发起请求
 
 ```
-用户：帮我从豆包搜索"广州三日游经典路线"，然后整理成详细行程表
+用户：帮我从DeepSeek搜索"广州三日游经典路线"，然后整理成详细行程表
 ```
 
 ### 步骤2：技能激活与指导
 
 ```
-助手：我将使用豆包搜索技能帮你获取广州三日游经典路线。
+助手：我将使用DeepSeek搜索技能帮你获取广州三日游经典路线。
 
 **请先完成以下手动步骤：**
 1. 打开Chrome浏览器（如果未打开）
-2. 访问: https://www.doubao.com/chat/
+2. 访问DeepSeek页面
 3. 在输入框中输入: "广州三日游经典路线"
 4. 按Enter键开始搜索
-5. 等待豆包生成完整回答（约5-10秒）
+5. 等待DeepSeek生成完整回答（约5-10秒）
 6. 确保OpenClaw浏览器扩展已附加（徽章显示ON）
 
 完成后请回复"已搜索完成"，我将提取并整理结果。
@@ -31,9 +31,9 @@
 ### 步骤3：用户执行手动搜索
 
 用户按照指导操作：
-1. 打开Chrome，访问豆包页面
+1. 打开Chrome，访问DeepSeek页面
 2. 输入"广州三日游经典路线"并回车
-3. 等待豆包生成回答
+3. 等待DeepSeek生成回答
 4. 确认OpenClaw扩展已附加
 
 ```
@@ -45,8 +45,8 @@
 助手运行提取脚本：
 
 ```bash
-cd ~/.openclaw/workspace/skills/doubao-search
-./scripts/doubao_search.sh --clean > /tmp/doubao_results.txt
+cd ~/.openclaw/workspace/skills/deepseek-search
+./scripts/deepseek_search.sh --clean > /tmp/deepseek_results.txt
 ```
 
 **提取到的内容示例**：
@@ -80,7 +80,7 @@ cd ~/.openclaw/workspace/skills/doubao-search
 ### 步骤5：助手处理与呈现结果
 
 ```
-助手：✅ 成功从豆包提取到广州三日游经典路线！
+助手：✅ 成功从DeepSeek提取到广州三日游经典路线！
 
 **提取摘要：**
 - 共获取3天完整行程规划
@@ -180,7 +180,7 @@ cd ~/.openclaw/workspace/skills/doubao-search
 - 自动化提取后处理
 
 ### 2. **高质量提取**
-- 精准定位豆包回答内容
+- 精准定位DeepSeek回答内容
 - 自动清理页面导航元素
 - 保留完整结构和细节
 
@@ -196,21 +196,21 @@ cd ~/.openclaw/workspace/skills/doubao-search
 
 ## 其他使用场景示例
 
-### 场景A：学习资料收集
+### 场景A：学习路径规划  
 ```
-用户：搜索豆包"Python数据分析入门学习路径"
+用户：搜索DeepSeek"Python数据分析入门学习路径"
 助手：指导搜索 → 提取学习路径 → 整理为课程大纲 → 推荐学习资源
 ```
 
 ### 场景B：产品对比研究  
 ```
-用户：从豆包获取"2026年电动汽车品牌对比"
+用户：从DeepSeek获取"2026年电动汽车品牌对比"
 助手：指导搜索 → 提取对比信息 → 制作对比表格 → 分析优缺点
 ```
 
 ### 场景C：创意灵感获取
 ```
-用户：搜索豆包"春节活动策划创意"
+用户：搜索DeepSeek"春节活动策划创意"
 助手：指导搜索 → 提取创意点子 → 分类整理 → 生成策划框架
 ```
 
@@ -225,7 +225,7 @@ cd ~/.openclaw/workspace/skills/doubao-search
 ### 批量处理模式
 ```bash
 # 批量搜索多个主题
-./scripts/doubao_batch.sh topics.txt
+./scripts/deepseek_batch.sh topics.txt
 
 #  topics.txt内容：
 # 广州美食推荐
@@ -239,21 +239,21 @@ cd ~/.openclaw/workspace/skills/doubao-search
 ### 情况1：提取内容过少
 ```
 用户：已搜索完成
-助手：正在提取... 发现内容较少，可能豆包还在生成。
+助手：正在提取... 发现内容较少，可能DeepSeek还在生成。
 建议：请等待10秒后回复"重新提取"，或检查是否看到完整回答。
 ```
 
 ### 情况2：页面未加载
 ```
-助手：未检测到豆包页面。请确认：
+助手：未检测到DeepSeek页面。请确认：
 1. Chrome是否已打开？
-2. 是否访问 https://www.doubao.com/chat/？
+2. 是否访问DeepSeek页面？
 3. 页面是否完成加载？
 ```
 
 ### 情况3：扩展未附加
 ```
-助手：检测到豆包页面，但OpenClaw扩展未附加。
+助手：检测到DeepSeek页面，但OpenClaw扩展未附加。
 请点击Chrome工具栏中的OpenClaw图标，确保徽章显示ON。
 ```
 
@@ -261,7 +261,7 @@ cd ~/.openclaw/workspace/skills/doubao-search
 
 ### 用户侧：
 1. 使用明确的搜索词获得更好结果
-2. 等待豆包生成完整回答后再通知助手
+2. 等待DeepSeek生成完整回答后再通知助手
 3. 保持页面稳定不刷新/切换
 4. 确保网络连接良好
 
@@ -282,8 +282,8 @@ cd ~/.openclaw/workspace/skills/doubao-search
 
 ## 结论
 
-Doubao Search技能实现了：
-1. **可靠的内容获取**：绕过技术限制获取豆包回答
+DeepSeek Search技能实现了：
+1. **可靠的内容获取**：绕过技术限制获取DeepSeek回答
 2. **流畅的用户体验**：自然的手动-自动协作流程  
 3. **灵活的结果处理**：多种后续加工选项
 4. **强大的扩展性**：可与其他技能组合使用

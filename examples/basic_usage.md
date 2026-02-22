@@ -1,29 +1,29 @@
-# Doubao Search Skill - Basic Usage Examples
+# DeepSeek Search Skill - Basic Usage Examples
 
 ## Scenario 1: Basic Search Extraction
 
-**Goal**: Extract search results from an already-searched Doubao page.
+**Goal**: Extract search results from an already-searched DeepSeek page.
 
 **Steps**:
-1. Open Chrome and navigate to `https://www.doubao.com/chat/`
+1. Open Chrome and navigate to DeepSeek page
 2. Manually type your query (e.g., "广州旅游景点推荐")
-3. Press Enter and wait for Doubao to generate response
+3. Press Enter and wait for DeepSeek to generate response
 4. Run the skill to extract results:
 
 ```bash
 # From the skill directory
-cd ~/.openclaw/workspace/skills/doubao-search
+cd ~/.openclaw/workspace/skills/deepseek-search
 
 # Basic extraction
-./scripts/doubao_search.sh
+./scripts/deepseek_search.sh
 
 # With cleaning and verbose output
-./scripts/doubao_search.sh --clean --verbose
+./scripts/deepseek_search.sh --clean --verbose
 ```
 
 **Expected Output**:
 ```
-=== DOUBAO SEARCH RESULTS ===
+=== DEEPSEEK SEARCH RESULTS ===
 
 广州旅游景点推荐
 这里为你推荐几个广州经典与新兴的旅游景点，涵盖地标、文化、自然与亲子等不同类型，方便你根据兴趣选择：
@@ -41,17 +41,17 @@ cd ~/.openclaw/workspace/skills/doubao-search
 
 ## Scenario 2: Python Integration
 
-**Goal**: Use Doubao search within a Python script or OpenClaw agent.
+**Goal**: Use DeepSeek search within a Python script or OpenClaw agent.
 
 **Python Code**:
 ```python
 import sys
-sys.path.append(os.path.expanduser('~/.openclaw/workspace/skills/doubao-search/scripts'))
+sys.path.append(os.path.expanduser('~/.openclaw/workspace/skills/deepseek-search/scripts'))
 
-from doubao_search import search_doubao
+from deepseek_search import search_deepseek
 
 # Search for specific query
-results = search_doubao(
+results = search_deepseek(
     query="2026年2月份 广州十大游玩地",
     clean=True,
     verbose=True
@@ -65,7 +65,7 @@ if results['success']:
     
     # Save to file
     import json
-    with open('doubao_results.json', 'w', encoding='utf-8') as f:
+    with open('deepseek_results.json', 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 else:
     print(f"Error: {results['error']}")
@@ -73,19 +73,19 @@ else:
 
 ## Scenario 3: OpenClaw Agent Integration
 
-**Goal**: Call Doubao search from within OpenClaw agent workflow.
+**Goal**: Call DeepSeek search from within OpenClaw agent workflow.
 
 **Agent Workflow**:
 ```python
 # In your OpenClaw agent code
-def search_doubao_from_agent(query):
+def search_deepseek_from_agent(query):
     """
-    Search Doubao and return formatted results.
+    Search DeepSeek and return formatted results.
     """
     import subprocess
     
     # Run the shell script
-    script_path = os.path.expanduser("~/.openclaw/workspace/skills/doubao-search/scripts/doubao_search.sh")
+    script_path = os.path.expanduser("~/.openclaw/workspace/skills/deepseek-search/scripts/deepseek_search.sh")
     
     result = subprocess.run(
         [script_path, "--clean"],
@@ -99,8 +99,8 @@ def search_doubao_from_agent(query):
         output = result.stdout
         
         # Extract just the content between markers
-        if "=== DOUBAO SEARCH RESULTS ===" in output:
-            parts = output.split("=== DOUBAO SEARCH RESULTS ===")
+        if "=== DEEPSEEK SEARCH RESULTS ===" in output:
+            parts = output.split("=== DEEPSEEK SEARCH RESULTS ===")
             if len(parts) > 1:
                 content = parts[1].split("=== END RESULTS ===")[0].strip()
                 return content
@@ -111,18 +111,18 @@ def search_doubao_from_agent(query):
 
 # Usage in agent
 query = "广州美食推荐"
-print(f"Searching Doubao for: {query}")
-print("Please manually enter this query in Doubao and press Enter")
+print(f"Searching DeepSeek for: {query}")
+print("Please manually enter this query in DeepSeek and press Enter")
 print("Waiting for you to complete manual step...")
 
 # After user completes manual step
-results = search_doubao_from_agent(query)
+results = search_deepseek_from_agent(query)
 print(f"Extracted results:\n{results}")
 ```
 
 ## Scenario 4: Batch Processing
 
-**Goal**: Extract results from multiple pre-searched Doubao tabs.
+**Goal**: Extract results from multiple pre-searched DeepSeek tabs.
 
 **Batch Script** (`batch_extract.sh`):
 ```bash
@@ -141,9 +141,9 @@ for query in "${QUERIES[@]}"; do
     echo "========================================"
     
     # Note: User needs to manually search each query first
-    read -p "Please search '$query' in Doubao and press Enter to continue..."
+    read -p "Please search '$query' in DeepSeek and press Enter to continue..."
     
-    ./scripts/doubao_search.sh --clean > "results_${query}.txt"
+    ./scripts/deepseek_search.sh --clean > "results_${query}.txt"
     
     echo "Saved to: results_${query}.txt"
     echo ""
@@ -152,16 +152,16 @@ done
 
 ## Scenario 5: Content Analysis Pipeline
 
-**Goal**: Extract Doubao results and perform additional analysis.
+**Goal**: Extract DeepSeek results and perform additional analysis.
 
 **Pipeline Script**:
 ```python
 import re
 from typing import List, Dict
 
-def analyze_doubao_content(content: str) -> Dict:
+def analyze_deepseek_content(content: str) -> Dict:
     """
-    Analyze extracted Doubao content.
+    Analyze extracted DeepSeek content.
     """
     # Extract numbered list items
     items = re.findall(r'\d+\.\s+([^\n]+(?:\n\s+[^\n]+)*)', content)
@@ -186,11 +186,11 @@ def analyze_doubao_content(content: str) -> Dict:
     }
 
 # Usage
-from doubao_search import search_doubao
+from deepseek_search import search_deepseek
 
-results = search_doubao("广州周末好去处", clean=True)
+results = search_deepseek("广州周末好去处", clean=True)
 if results['success']:
-    analysis = analyze_doubao_content(results['content'])
+    analysis = analyze_deepseek_content(results['content'])
     
     print(f"Analysis Results:")
     print(f"Found {analysis['total_items']} recommendation items")
@@ -206,30 +206,30 @@ if results['success']:
 
 ### Example 1: Handling "Tab not found" error
 ```bash
-# Error: Doubao tab not found
-# Solution: Open Doubao in Chrome first
-open -a "Google Chrome" "https://www.doubao.com/chat/"
+# Error: DeepSeek tab not found
+# Solution: Open DeepSeek in Chrome first
+open -a "Google Chrome"
 ```
 
 ### Example 2: Handling empty results
 ```bash
 # If results are empty, try without cleaning
-./scripts/doubao_search.sh  # No --clean flag
+./scripts/deepseek_search.sh  # No --clean flag
 
 # Or increase wait time before extraction
-echo "Waiting for Doubao to generate response..."
+echo "Waiting for DeepSeek to generate response..."
 sleep 10
-./scripts/doubao_search.sh --clean
+./scripts/deepseek_search.sh --clean
 ```
 
 ### Example 3: Saving results with timestamp
 ```bash
 # Custom output filename
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-./scripts/doubao_search.sh --clean > "doubao_results_${TIMESTAMP}.md"
+./scripts/deepseek_search.sh --clean > "deepseek_results_${TIMESTAMP}.md"
 
 # Also save raw output
-./scripts/doubao_search.sh > "doubao_raw_${TIMESTAMP}.txt"
+./scripts/deepseek_search.sh > "deepseek_raw_${TIMESTAMP}.txt"
 ```
 
 ## Integration with Other Tools
@@ -237,7 +237,7 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 ### With `jq` for JSON processing:
 ```bash
 # Convert output to JSON
-./scripts/doubao_search.sh --clean | \
+./scripts/deepseek_search.sh --clean | \
 python3 -c "import sys, json; print(json.dumps({'content': sys.stdin.read()}, ensure_ascii=False))" | \
 jq '.'
 ```
@@ -245,22 +245,22 @@ jq '.'
 ### With `pandoc` for format conversion:
 ```bash
 # Convert to HTML
-./scripts/doubao_search.sh --clean | pandoc -f markdown -t html -o results.html
+./scripts/deepseek_search.sh --clean | pandoc -f markdown -t html -o results.html
 
 # Convert to PDF (requires LaTeX)
-./scripts/doubao_search.sh --clean | pandoc -f markdown -t latex -o results.pdf
+./scripts/deepseek_search.sh --clean | pandoc -f markdown -t latex -o results.pdf
 ```
 
 ### With `grep` for specific content:
 ```bash
 # Find all mentions of transportation
-./scripts/doubao_search.sh --clean | grep -i "交通"
+./scripts/deepseek_search.sh --clean | grep -i "交通"
 
 # Find numbered items
-./scripts/doubao_search.sh --clean | grep -E "^\d+\."
+./scripts/deepseek_search.sh --clean | grep -E "^\d+\."
 
 # Count recommendations
-./scripts/doubao_search.sh --clean | grep -c "推荐"
+./scripts/deepseek_search.sh --clean | grep -c "推荐"
 ```
 
 ## Best Practices

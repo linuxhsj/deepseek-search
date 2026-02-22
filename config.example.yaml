@@ -1,4 +1,4 @@
-# Doubao Search Skill Configuration
+# DeepSeek Search Skill Configuration
 # Copy this file to config.yaml and adjust as needed
 
 # General settings
@@ -6,8 +6,8 @@ general:
   # Default browser to use (only Chrome supported currently)
   browser: "Google Chrome"
   
-  # Default Doubao URL
-  doubao_url: "https://www.doubao.com/chat/"
+  # Default DeepSeek URL
+  deepseek_url: "https://www.deepseek.com/chat/"
   
   # Timeout settings (in seconds)
   timeouts:
@@ -19,7 +19,7 @@ general:
   output:
     default_format: "text"  # text, json, markdown
     auto_save: true
-    save_directory: "/tmp/doubao_results"
+    save_directory: "/tmp/deepseek_results"
     timestamp_format: "%Y%m%d_%H%M%S"
 
 # Content extraction settings
@@ -155,7 +155,7 @@ applescript:
   
   # Tab search parameters
   tab_search:
-    url_pattern: "doubao.com/chat"
+    url_pattern: "deepseek.com/chat"
     max_windows: 10
     max_tabs_per_window: 20
   
@@ -177,7 +177,7 @@ logging:
   
   # Log file settings
   file:
-    path: "/tmp/doubao_search.log"
+    path: "/tmp/deepseek_search.log"
     max_size_mb: 10
     max_files: 5
 
@@ -206,12 +206,12 @@ integration:
   openclaw:
     # Skill activation keywords
     activation_keywords:
-      - "doubao"
-      - "豆包"
-      - "搜索豆包"
-      - "doubao search"
+      - "deepseek"
+      - "DeepSeek"
+      - "搜索deepseek"
+      - "deepseek search"
     
-    # Auto-detect Doubao URLs
+    # Auto-detect DeepSeek URLs
     auto_detect_urls: true
     
   # Browser extension integration

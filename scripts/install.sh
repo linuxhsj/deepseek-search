@@ -1,9 +1,9 @@
 #!/bin/bash
-# Installation script for Doubao Search Skill
+# Installation script for DeepSeek Search Skill
 
 set -e
 
-echo "📦 Installing Doubao Search Skill..."
+echo "📦 Installing DeepSeek Search Skill..."
 echo "========================================"
 
 # Check prerequisites
@@ -37,7 +37,7 @@ echo "✅ Prerequisites check passed"
 
 # Make scripts executable
 echo "🔧 Setting up scripts..."
-chmod +x "$(dirname "$0")/doubao_search.sh"
+chmod +x "$(dirname "$0")/deepseek_search.sh"
 chmod +x "$(dirname "$0")/../examples/test_basic.sh" 2>/dev/null || true
 
 # Create symlink to scripts directory in PATH if requested
@@ -46,15 +46,15 @@ read -p "Create symlink to /usr/local/bin for easy access? (y/N): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     if [[ -w /usr/local/bin ]]; then
-        ln -sf "$(dirname "$0")/doubao_search.sh" /usr/local/bin/doubao-search
-        echo "✅ Created symlink: /usr/local/bin/doubao-search"
+        ln -sf "$(dirname "$0")/deepseek_search.sh" /usr/local/bin/deepseek-search
+        echo "✅ Created symlink: /usr/local/bin/deepseek-search"
     else
         echo "⚠️  Cannot write to /usr/local/bin. Try with sudo or skip."
         read -p "Try with sudo? (y/N): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            sudo ln -sf "$(dirname "$0")/doubao_search.sh" /usr/local/bin/doubao-search
-            echo "✅ Created symlink with sudo: /usr/local/bin/doubao-search"
+            sudo ln -sf "$(dirname "$0")/deepseek_search.sh" /usr/local/bin/deepseek-search
+            echo "✅ Created symlink with sudo: /usr/local/bin/deepseek-search"
         fi
     fi
 fi
@@ -70,7 +70,7 @@ else
 fi
 
 # Create output directory
-OUTPUT_DIR="/tmp/doubao_results"
+OUTPUT_DIR="/tmp/deepseek_results"
 mkdir -p "$OUTPUT_DIR"
 echo "✅ Created output directory: $OUTPUT_DIR"
 
@@ -94,17 +94,17 @@ echo "========================================"
 echo "🎉 Installation complete!"
 echo ""
 echo "Quick start:"
-echo "1. Open Chrome and go to https://www.doubao.com/chat/"
+echo "1. Open Chrome and go to https://www.deepseek.com/chat/"
 echo "2. Make sure OpenClaw browser extension is attached (badge shows ON)"
-echo "3. Manually search for something in Doubao"
-echo "4. Run: ./scripts/doubao_search.sh --clean"
+echo "3. Manually search for something in DeepSeek"
+echo "4. Run: ./scripts/deepseek_search.sh --clean"
 echo ""
 echo "Or if you created symlink:"
-echo "   doubao-search --clean"
+echo "   deepseek-search --clean"
 echo ""
 echo "For more examples, see:"
 echo "   ./examples/basic_usage.md"
 echo ""
 echo "Need help? Check the README.md file or run:"
-echo "   ./scripts/doubao_search.sh --help"
+echo "   ./scripts/deepseek_search.sh --help"
 echo "========================================"
